@@ -1,9 +1,15 @@
 from sklearn.model_selection import train_test_split
 import numpy as np
 import os
+import yaml
 
-test_size = 0.2
-seed = 42
+with open("params.yaml", "r") as file:
+    params = yaml.safe_load(file)
+
+
+
+test_size = params["preprocess"]["test_size"]
+seed = params["preprocess"]["seed"]
 
 data = np.load("./data/raw/fashion_mnist.npz")
 
