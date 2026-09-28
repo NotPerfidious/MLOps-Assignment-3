@@ -1,0 +1,1 @@
+This assignment asks to create an ANN to categorize an image into one of the ten classes with an accuracy>=85%. The assignment requires using git and dvc for model development.
