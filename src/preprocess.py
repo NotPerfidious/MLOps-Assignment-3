@@ -7,7 +7,6 @@ with open("params.yaml", "r") as file:
     params = yaml.safe_load(file)
 
 
-
 test_size = params["preprocess"]["test_size"]
 seed = params["preprocess"]["seed"]
 
@@ -23,9 +22,14 @@ X_train, X_val, y_train, y_val = train_test_split(
     X_temp, y_temp, test_size=test_size, random_state=seed
 )
 
-X_train = X_train.astype(np.float32) / 255.0
-X_val = X_val.astype(np.float32) / 255.0
-X_test = X_test.astype(np.float32) / 255.0
+# Global Z-score standardization
+mean = np.mean(X_train)
+std = np.std(X_train)
+e = 1e-7
+
+X_train = (X_train.astype(np.float32) - mean) / (std + e)
+X_val = (X_val.astype(np.float32) - mean) / (std + e)
+X_test = (X_test.astype(np.float32) - mean) / (std + e)
 
 
 os.makedirs("data/processed", exist_ok=True)
