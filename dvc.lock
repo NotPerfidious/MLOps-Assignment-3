@@ -1,0 +1,97 @@
+schema: '2.0'
+stages:
+  prepare:
+    cmd: python src/prepare.py
+    deps:
+    - path: src/prepare.py
+      hash: md5
+      md5: 194de27369e340c87af12f32b654fdf8
+      size: 414
+    outs:
+    - path: data/raw/fashion_mnist.npz
+      hash: md5
+      md5: c9c52fc78fc088a60c8b89f893bc5b5f
+      size: 54951002
+  preprocess:
+    cmd: python src/preprocess.py
+    deps:
+    - path: data/raw/fashion_mnist.npz
+      hash: md5
+      md5: c9c52fc78fc088a60c8b89f893bc5b5f
+      size: 54951002
+    - path: src/preprocess.py
+      hash: md5
+      md5: 28a5644eb382b725aafafcaaf170fb50
+      size: 929
+    params:
+      params.yaml:
+        preprocess.seed: 42
+        preprocess.test_size: 0.2
+    outs:
+    - path: data/processed/test.npz
+      hash: md5
+      md5: 9f50b055c44a9969c480ac0436b2aea6
+      size: 31370510
+    - path: data/processed/train.npz
+      hash: md5
+      md5: d9f150565b94cc34cc45a7e7f9eab081
+      size: 150576514
+    - path: data/processed/val.npz
+      hash: md5
+      md5: d1ac65505482d05e2f0122f09c477f77
+      size: 37644506
+  train:
+    cmd: python src/train.py
+    deps:
+    - path: data/processed/train.npz
+      hash: md5
+      md5: d9f150565b94cc34cc45a7e7f9eab081
+      size: 150576514
+    - path: data/processed/val.npz
+      hash: md5
+      md5: d1ac65505482d05e2f0122f09c477f77
+      size: 37644506
+    - path: src/train.py
+      hash: md5
+      md5: 46e59abb50598e97d24168f7a2896a82
+      size: 1356
+    params:
+      params.yaml:
+        train.batch_size: 32
+        train.dense_units: 128
+        train.dropout_rate: 0.2
+        train.epochs: 25
+        train.learning_rate: 0.001
+    outs:
+    - path: models/history.csv
+      hash: md5
+      md5: 629d7d520116b5732e674f36cfc39b2a
+      size: 2074
+    - path: models/model.h5
+      hash: md5
+      md5: 3c8c14f15d3dd94ef3186e563103747a
+      size: 1245272
+  evaluate:
+    cmd: python src/evaluate.py
+    deps:
+    - path: data/processed/test.npz
+      hash: md5
+      md5: 9f50b055c44a9969c480ac0436b2aea6
+      size: 31370510
+    - path: models/model.h5
+      hash: md5
+      md5: 3c8c14f15d3dd94ef3186e563103747a
+      size: 1245272
+    - path: src/evaluate.py
+      hash: md5
+      md5: c3e9f52cbf9a28dadb261c50c64aa254
+      size: 1295
+    outs:
+    - path: confusion_matrix.png
+      hash: md5
+      md5: c1af1e67ce05d166f75c152297099777
+      size: 54578
+    - path: metrics.json
+      hash: md5
+      md5: d13b3b863eaef63e7fe7301f25d29fb6
+      size: 171
